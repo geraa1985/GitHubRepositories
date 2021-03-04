@@ -55,17 +55,21 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
         binding.rvRepos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount = (recyclerView.layoutManager as LinearLayoutManager).childCount
+                val visibleItemCount =
+                    (recyclerView.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (recyclerView.layoutManager as LinearLayoutManager).itemCount
-                val firstVisibleItem = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val firstVisibleItem =
+                    (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-                if (firstVisibleItem > 2) {
-                    binding.fabScroll.animate().alpha(0.7f).setDuration(1000).start()
-                } else {
-                    binding.fabScroll.animate().alpha(0f).setDuration(1000).start()
+                if ((visibleItemCount + firstVisibleItem + 3) > totalItemCount){
+                    presenter.loadPage()
                 }
 
-                presenter.loadPage(visibleItemCount,totalItemCount,firstVisibleItem)
+                if (firstVisibleItem > 2) {
+                    binding.fabScroll.animate().alpha(0.7f).duration = 1000
+                } else {
+                    binding.fabScroll.animate().alpha(0f).duration = 1000
+                }
             }
         })
     }
@@ -78,6 +82,7 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 searchItem.collapseActionView()
+                adapter?.getData()?.clear()
                 presenter.searchRepos(query)
                 return false
             }
@@ -118,12 +123,12 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
     }
 
     override fun showError(message: String) =
-            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
 
 
     override fun noSuchRepos(repo: String) {
-            val message = "No such repos: $repo"
-            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        val message = "No such repos: $repo"
+        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
     }
 
     override fun showProgress() {
