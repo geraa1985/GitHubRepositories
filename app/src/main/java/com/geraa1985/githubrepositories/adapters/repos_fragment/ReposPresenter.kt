@@ -1,20 +1,22 @@
 package com.geraa1985.githubrepositories.adapters.repos_fragment
 
+import com.geraa1985.githubrepositories.adapters.IInteractor
 import com.geraa1985.githubrepositories.adapters.INavigation
-import com.geraa1985.githubrepositories.usecases.Interactor
 import kotlinx.coroutines.*
 import moxy.MvpPresenter
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ReposPresenter(private val interactor: Interactor = Interactor()) :
-    MvpPresenter<IReposView>(), CoroutineScope {
+class ReposPresenter: MvpPresenter<IReposView>(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
 
     @Inject
     lateinit var navigation: INavigation
+
+    @Inject
+    lateinit var interactor: IInteractor
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -25,7 +27,7 @@ class ReposPresenter(private val interactor: Interactor = Interactor()) :
         if (query != null && query.isNotEmpty()) {
             launch {
                 try {
-                    val repos = interactor.getData(query)
+                    val repos = interactor.getRepos(query)
                     if (repos.isNullOrEmpty()) {
                         withContext(Dispatchers.Main) { viewState.noSuchRepos(query) }
                     } else {

@@ -16,6 +16,6 @@ data class GitHubUser(
     @Expose @SerializedName("email") val email: String?,
     @Expose @SerializedName("bio") val bio: String?,
     @Expose @SerializedName("twitter_username") val twitterUsername: String?,
-    @Expose @SerializedName("followers") val followers: Int?,
-    @Expose @SerializedName("following") val following: Int?
+    @Expose @SerializedName("followers") val followers: Int,
+    @Expose @SerializedName("following") val following: Int
 ): Parcelable
