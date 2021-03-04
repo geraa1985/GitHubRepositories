@@ -57,7 +57,7 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
             if (currentPage < totalPages) {
                 try {
                     val newRepos = interactor.getRepos(currentQuery, ++currentPage)
-                    if (!newRepos.isNullOrEmpty()) {
+                    newRepos?.let {
                         withContext(Dispatchers.Main) {
                             viewState.updateRepos(newRepos)
                         }

@@ -2,6 +2,7 @@ package com.geraa1985.githubrepositories.adapters.user_fragment
 
 import moxy.MvpView
 import moxy.viewstate.strategy.alias.AddToEndSingle
+import moxy.viewstate.strategy.alias.OneExecution
 
 @AddToEndSingle
 interface IUserView: MvpView {
@@ -15,5 +16,6 @@ interface IUserView: MvpView {
     fun showBio(bio: String?)
     fun showTwitter(twitter: String?)
     fun showFollow(followers: String, following: String)
+    @OneExecution
     fun showError(message: String)
 }
