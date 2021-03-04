@@ -28,6 +28,7 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
     }
 
     fun searchRepos(query: String?) {
+        viewState.showProgress()
         if (query != null && query.isNotEmpty()) {
             launch {
                 try {
@@ -36,7 +37,10 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
                         withContext(Dispatchers.Main) { viewState.noSuchRepos(query) }
                     } else {
                         currentQuery = query
-                        withContext(Dispatchers.Main) { viewState.updateRepos(repos) }
+                        withContext(Dispatchers.Main) {
+                            viewState.hideProgress()
+                            viewState.updateRepos(repos)
+                        }
                     }
                 } catch (e: Throwable) {
                     e.message?.let {

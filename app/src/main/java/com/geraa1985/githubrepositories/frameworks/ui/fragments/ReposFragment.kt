@@ -77,11 +77,12 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
         searchView.queryHint = "Enter repo"
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                searchItem.collapseActionView()
+                presenter.searchRepos(query)
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                presenter.searchRepos(newText)
                 return false
             }
         })
@@ -123,6 +124,14 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
     override fun noSuchRepos(repo: String) {
             val message = "No such repos: $repo"
             Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun showProgress() {
+        binding.progressCircular.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        binding.progressCircular.visibility = View.INVISIBLE
     }
 
     override fun backPressed(): Boolean {

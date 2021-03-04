@@ -10,4 +10,6 @@ interface IReposView: MvpView {
     fun updateRepos(repos: List<GitHubRepo>)
     fun showError(message: String)
     fun noSuchRepos(repo: String)
+    fun showProgress()
+    fun hideProgress()
 }
