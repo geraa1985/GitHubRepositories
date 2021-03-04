@@ -7,10 +7,11 @@ import javax.inject.Inject
 
 class WebData @Inject constructor(private val gitHubApi: IGitHubData): IWeb {
 
+    @Throws(Throwable::class)
     override suspend fun getRepos(repo: String, perPage: Int, page: Int): SearchResult? =
         gitHubApi.searchRepos(repo, perPage, page)
 
-
+    @Throws(Throwable::class)
     override suspend fun getUser(login: String): GitHubUser? =
         gitHubApi.getUser(login)
 

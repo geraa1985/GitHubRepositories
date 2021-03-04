@@ -20,6 +20,7 @@ class Repository @Inject constructor(
     private val perPage = 10
     private var totalPages = 0
 
+    @Throws(Throwable::class)
     override suspend fun getRepos(repo: String, page: Int): List<GitHubRepo>? =
         if (networkStatus.isConnected()) {
             web.getRepos(repo, perPage, page)?.totalCount?.let { totalPages = it.div(perPage) }
@@ -28,6 +29,7 @@ class Repository @Inject constructor(
             TODO("Not yet implemented")
         }
 
+    @Throws(Throwable::class)
     override suspend fun getUser(login: String): GitHubUser? =
         if (networkStatus.isConnected()) {
             web.getUser(login)

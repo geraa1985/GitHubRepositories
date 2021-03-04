@@ -46,15 +46,18 @@ class UserFragment : MvpAppCompatFragment(), IUserView, BackButtonListener {
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MyApp.instance.appComponent.inject(this)
+    }
+
     override fun onStart() {
         super.onStart()
-        MyApp.instance.appComponent.inject(this)
 
         arguments?.getString(USER_KEY)?.let {
             presenter.setUser(it)
         }
     }
-
 
     override fun showLogin(login: String?) {
         if (login != null && login.isNotEmpty()) {

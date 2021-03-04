@@ -50,9 +50,15 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
     fun loadPage(visibleItemCount: Int, totalItemCount: Int, firstVisibleItem: Int) {
         if ((visibleItemCount + firstVisibleItem + 3) > totalItemCount && currentPage < totalPages) {
             launch {
-                val newRepos = interactor.getRepos(currentQuery, ++currentPage)
-                if (!newRepos.isNullOrEmpty()) {
-                    viewState.updateRepos(newRepos)
+                try {
+                    val newRepos = interactor.getRepos(currentQuery, ++currentPage)
+                    if (!newRepos.isNullOrEmpty()) {
+                        viewState.updateRepos(newRepos)
+                    }
+                } catch (e: Throwable) {
+                    e.message?.let {
+                        withContext(Dispatchers.Main) { viewState.showError(it) }
+                    }
                 }
             }
         }

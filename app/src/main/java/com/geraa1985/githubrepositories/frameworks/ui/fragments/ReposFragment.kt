@@ -47,12 +47,23 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
         activity.setSupportActionBar(mainToolbar)
         setHasOptionsMenu(true)
 
+        binding.fabScroll.alpha = 0f
+        binding.fabScroll.setOnClickListener {
+            binding.rvRepos.scrollToPosition(0)
+        }
+
         binding.rvRepos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val visibleItemCount = (recyclerView.layoutManager as LinearLayoutManager).childCount
                 val totalItemCount = (recyclerView.layoutManager as LinearLayoutManager).itemCount
                 val firstVisibleItem = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+
+                if (firstVisibleItem > 2) {
+                    binding.fabScroll.animate().alpha(0.7f).setDuration(1000).start()
+                } else {
+                    binding.fabScroll.animate().alpha(0f).setDuration(1000).start()
+                }
 
                 presenter.loadPage(visibleItemCount,totalItemCount,firstVisibleItem)
             }
