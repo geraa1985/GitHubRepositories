@@ -7,5 +7,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SearchResult(
-    @Expose @SerializedName("items") val reposList: List<GitHubRepo>?
+    @Expose @SerializedName("items") val reposList: List<GitHubRepo>?,
+    @Expose @SerializedName("total_count") val totalCount: Int?
 ): Parcelable

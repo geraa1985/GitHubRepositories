@@ -5,7 +5,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.geraa1985.githubrepositories.R
 import com.geraa1985.githubrepositories.adapters.repos_fragment.IReposView
 import com.geraa1985.githubrepositories.adapters.repos_fragment.ReposPresenter
@@ -13,6 +15,7 @@ import com.geraa1985.githubrepositories.app.MyApp
 import com.geraa1985.githubrepositories.databinding.FragmentReposBinding
 import com.geraa1985.githubrepositories.entities.GitHubRepo
 import com.geraa1985.githubrepositories.frameworks.cicerone.BackButtonListener
+import com.geraa1985.githubrepositories.frameworks.ui.rvadapters.ReposDiffUtilCallback
 import com.geraa1985.githubrepositories.frameworks.ui.rvadapters.ReposRVAdapter
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
@@ -43,6 +46,17 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
         val activity = activity as AppCompatActivity
         activity.setSupportActionBar(mainToolbar)
         setHasOptionsMenu(true)
+
+        binding.rvRepos.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount = (recyclerView.layoutManager as LinearLayoutManager).childCount
+                val totalItemCount = (recyclerView.layoutManager as LinearLayoutManager).itemCount
+                val firstVisibleItem = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+
+                presenter.loadPage(visibleItemCount,totalItemCount,firstVisibleItem)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -77,7 +91,18 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
     }
 
     override fun updateRepos(repos: List<GitHubRepo>) {
-            adapter?.setData(repos)
+        adapter?.let {
+            if (it.getData().isNullOrEmpty()) {
+                it.setData(repos)
+            } else {
+                val oldList = it.getData()
+                val newList = it.getData().apply { addAll(repos) }
+
+                val reposDiffUtilCallback = ReposDiffUtilCallback(oldList, newList)
+                val reposDiffResult = DiffUtil.calculateDiff(reposDiffUtilCallback)
+                reposDiffResult.dispatchUpdatesTo(it)
+            }
+        }
     }
 
     override fun showError(message: String) =

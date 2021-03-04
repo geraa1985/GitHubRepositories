@@ -15,7 +15,8 @@ class Interactor: IInteractor {
         MyApp.instance.appComponent.inject(this)
     }
 
-    override suspend fun getRepos(repo: String): List<GitHubRepo>? = repository.getRepos(repo)
+    override suspend fun getRepos(repo: String, page: Int): List<GitHubRepo>? = repository.getRepos(repo, page)
     override suspend fun getUser(login: String): GitHubUser? = repository.getUser(login)
+    override fun getTotalPages(): Int = repository.getTotalPages()
 
 }

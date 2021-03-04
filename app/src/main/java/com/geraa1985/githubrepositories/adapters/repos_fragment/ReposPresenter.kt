@@ -7,7 +7,7 @@ import moxy.MvpPresenter
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ReposPresenter: MvpPresenter<IReposView>(), CoroutineScope {
+class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
@@ -18,6 +18,10 @@ class ReposPresenter: MvpPresenter<IReposView>(), CoroutineScope {
     @Inject
     lateinit var interactor: IInteractor
 
+    private var currentPage = 1
+    private val totalPages: Int by lazy { interactor.getTotalPages() }
+    private lateinit var currentQuery: String
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.initRvRepos()
@@ -27,10 +31,11 @@ class ReposPresenter: MvpPresenter<IReposView>(), CoroutineScope {
         if (query != null && query.isNotEmpty()) {
             launch {
                 try {
-                    val repos = interactor.getRepos(query)
+                    val repos = interactor.getRepos(query, currentPage)
                     if (repos.isNullOrEmpty()) {
                         withContext(Dispatchers.Main) { viewState.noSuchRepos(query) }
                     } else {
+                        currentQuery = query
                         withContext(Dispatchers.Main) { viewState.updateRepos(repos) }
                     }
                 } catch (e: Throwable) {
@@ -38,7 +43,17 @@ class ReposPresenter: MvpPresenter<IReposView>(), CoroutineScope {
                         withContext(Dispatchers.Main) { viewState.showError(it) }
                     }
                 }
+            }
+        }
+    }
 
+    fun loadPage(visibleItemCount: Int, totalItemCount: Int, firstVisibleItem: Int) {
+        if ((visibleItemCount + firstVisibleItem + 3) > totalItemCount && currentPage < totalPages) {
+            launch {
+                val newRepos = interactor.getRepos(currentQuery, ++currentPage)
+                if (!newRepos.isNullOrEmpty()) {
+                    viewState.updateRepos(newRepos)
+                }
             }
         }
     }

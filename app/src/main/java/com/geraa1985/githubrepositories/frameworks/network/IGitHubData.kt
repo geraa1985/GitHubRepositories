@@ -9,7 +9,11 @@ import retrofit2.http.Query
 interface IGitHubData {
 
     @GET("search/repositories")
-    suspend fun searchRepos(@Query("q") repo: String): SearchResult?
+    suspend fun searchRepos(
+        @Query("q") repo: String,
+        @Query("per_page") perPage: Int,
+        @Query("page") page: Int
+    ): SearchResult?
 
     @GET("users/{login}")
     suspend fun getUser(@Path("login") login: String): GitHubUser?

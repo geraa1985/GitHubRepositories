@@ -17,9 +17,13 @@ class Repository @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + Job()
 
-    override suspend fun getRepos(repo: String): List<GitHubRepo>? =
+    private val perPage = 10
+    private var totalPages = 0
+
+    override suspend fun getRepos(repo: String, page: Int): List<GitHubRepo>? =
         if (networkStatus.isConnected()) {
-            web.getRepos(repo)?.reposList
+            web.getRepos(repo, perPage, page)?.totalCount?.let { totalPages = it.div(perPage) }
+            web.getRepos(repo, perPage, page)?.reposList
         } else {
             TODO("Not yet implemented")
         }
@@ -30,5 +34,7 @@ class Repository @Inject constructor(
         } else {
             TODO("Not yet implemented")
         }
+
+    override fun getTotalPages(): Int = totalPages
 
 }

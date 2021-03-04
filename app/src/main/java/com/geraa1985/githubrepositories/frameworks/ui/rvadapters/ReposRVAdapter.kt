@@ -20,15 +20,17 @@ class ReposRVAdapter :
 
     private var onItemClickListener: OnItemClickListener? = null
 
-    private var data: List<GitHubRepo>? = null
+    private val data: MutableList<GitHubRepo> = mutableListOf()
 
     @Inject
     lateinit var imgLoader: IImgLoader<ImageView, RequestOptions>
 
     fun setData(data: List<GitHubRepo>) {
-        this.data = data
+        this.data.addAll(data)
         notifyDataSetChanged()
     }
+
+    fun getData(): MutableList<GitHubRepo> = data
 
     private lateinit var binding: RvItemRepoBinding
 
@@ -38,12 +40,12 @@ class ReposRVAdapter :
     }
 
     override fun onBindViewHolder(holder: RecyclerItemViewHolder, position: Int) {
-        data?.get(position)?.let { holder.bind(it) }
+        data[position].let { holder.bind(it) }
         holder.itemView.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.rv_repos_anims)
     }
 
     override fun getItemCount(): Int {
-        return data?.size ?: 0
+        return data.size
     }
 
     inner class RecyclerItemViewHolder(
