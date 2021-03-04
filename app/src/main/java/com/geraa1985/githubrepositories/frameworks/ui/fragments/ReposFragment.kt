@@ -61,8 +61,10 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
                 val firstVisibleItem =
                     (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-                if ((visibleItemCount + firstVisibleItem + 1) > totalItemCount){
-                    presenter.loadPage()
+                if ((visibleItemCount + firstVisibleItem + 15) > totalItemCount){
+                    if(!presenter.isLoading()) {
+                        presenter.loadPage()
+                    }
                 }
 
                 if (firstVisibleItem > 0) {

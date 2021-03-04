@@ -60,7 +60,12 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
         }
     }
 
+    private var isLoadingPage = false
+
+    fun isLoading() = isLoadingPage
+
     fun loadPage() {
+        isLoadingPage = true
         launch {
             if (currentPage < totalPages) {
                 try {
@@ -77,6 +82,7 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
                     }
                 }
             }
+            isLoadingPage = false
         }
     }
 
