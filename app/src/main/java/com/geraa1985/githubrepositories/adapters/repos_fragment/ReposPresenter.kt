@@ -29,12 +29,17 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
 
     fun searchRepos(query: String?) {
         viewState.showProgress()
+        currentPage = 1
+        totalPages = 1
         if (query != null && query.isNotEmpty()) {
             launch {
                 try {
                     val repos = interactor.getRepos(query, currentPage)
                     if (repos.isNullOrEmpty()) {
-                        withContext(Dispatchers.Main) { viewState.noSuchRepos(query) }
+                        withContext(Dispatchers.Main) {
+                            viewState.hideProgress()
+                            viewState.noSuchRepos(query)
+                        }
                     } else {
                         currentQuery = query
                         totalPages = interactor.getTotalPages()
@@ -45,7 +50,10 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
                     }
                 } catch (e: Throwable) {
                     e.message?.let {
-                        withContext(Dispatchers.Main) { viewState.showError(it) }
+                        withContext(Dispatchers.Main) {
+                            viewState.hideProgress()
+                            viewState.showError(it)
+                        }
                     }
                 }
             }
@@ -56,7 +64,8 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
         launch {
             if (currentPage < totalPages) {
                 try {
-                    val newRepos = interactor.getRepos(currentQuery, ++currentPage)
+                    val newPage = currentPage++
+                    val newRepos = interactor.getNewPage(currentQuery, newPage)
                     newRepos?.let {
                         withContext(Dispatchers.Main) {
                             viewState.updateRepos(newRepos)
@@ -65,12 +74,10 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
                 } catch (e: Throwable) {
                     e.message?.let {
                         withContext(Dispatchers.Main) { viewState.showError(it) }
-                        e.printStackTrace()
                     }
                 }
             }
         }
-
     }
 
     fun itemClicked(login: String) {
@@ -81,5 +88,10 @@ class ReposPresenter : MvpPresenter<IReposView>(), CoroutineScope {
     fun backPressed(): Boolean {
         navigation.goBack()
         return true
+    }
+
+    override fun onDestroy() {
+        cancel()
+        super.onDestroy()
     }
 }

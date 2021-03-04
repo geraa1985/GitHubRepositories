@@ -61,11 +61,11 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
                 val firstVisibleItem =
                     (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
 
-                if ((visibleItemCount + firstVisibleItem + 3) > totalItemCount){
+                if ((visibleItemCount + firstVisibleItem + 1) > totalItemCount){
                     presenter.loadPage()
                 }
 
-                if (firstVisibleItem > 2) {
+                if (firstVisibleItem > 0) {
                     binding.fabScroll.animate().alpha(0.7f).duration = 1000
                 } else {
                     binding.fabScroll.animate().alpha(0f).duration = 1000
@@ -112,7 +112,7 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
             if (it.getData().isNullOrEmpty()) {
                 it.setData(repos)
             } else {
-                val oldList = it.getData()
+                val oldList = mutableListOf<GitHubRepo>().apply { addAll(it.getData()) }
                 val newList = it.getData().apply { addAll(repos) }
 
                 val reposDiffUtilCallback = ReposDiffUtilCallback(oldList, newList)

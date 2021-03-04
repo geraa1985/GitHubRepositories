@@ -11,22 +11,19 @@ class NetworkStatus @Inject constructor(private val myUrl: String) : INetworkSta
 
     override suspend fun isConnected(): Boolean = suspendCoroutine { continuation ->
 
-//        Thread {
-//            val url = URL(myUrl)
-//            try {
-//                val httpUrlConnection = url.openConnection() as HttpURLConnection
-//                httpUrlConnection.connectTimeout = 3000
-//                httpUrlConnection.connect()
-//                if (httpUrlConnection.responseCode == HttpURLConnection.HTTP_OK) {
-//                    continuation.resume(true)
-//                }
-//            } catch (e: Exception) {
-//                continuation.resume(false)
-//            }
-//        }.start()
-
-        //проверку убрал чтоб не тупила, кэша по заданию всё-равно нет...
-        continuation.resume(true)
+        Thread {
+            val url = URL(myUrl)
+            try {
+                val httpUrlConnection = url.openConnection() as HttpURLConnection
+                httpUrlConnection.connectTimeout = 3000
+                httpUrlConnection.connect()
+                if (httpUrlConnection.responseCode == HttpURLConnection.HTTP_OK) {
+                    continuation.resume(true)
+                }
+            } catch (e: Exception) {
+                continuation.resume(false)
+            }
+        }.start()
 
     }
 
