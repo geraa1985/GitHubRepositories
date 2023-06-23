@@ -25,6 +25,7 @@ class ReposRVAdapter :
     @Inject
     lateinit var imgLoader: IImgLoader<ImageView, RequestOptions>
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: List<GitHubRepo>) {
         this.data.addAll(data)
         notifyDataSetChanged()

@@ -6,10 +6,10 @@ import com.geraa1985.githubrepositories.adapters.main_activity.MainPresenter
 import com.geraa1985.githubrepositories.app.MyApp
 import com.geraa1985.githubrepositories.databinding.ActivityMainBinding
 import com.geraa1985.githubrepositories.frameworks.cicerone.BackButtonListener
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.androidx.AppNavigator
 import moxy.MvpAppCompatActivity
 import moxy.ktx.moxyPresenter
-import ru.terrakok.cicerone.NavigatorHolder
-import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), IMainView {
@@ -24,7 +24,7 @@ class MainActivity : MvpAppCompatActivity(), IMainView {
     }
 
     private val navigator by lazy {
-        SupportAppNavigator(this, supportFragmentManager, binding.fragmentsHost.id)
+        AppNavigator(this, fragmentManager = supportFragmentManager, containerId = binding.fragmentsHost.id)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +44,7 @@ class MainActivity : MvpAppCompatActivity(), IMainView {
         navigatorHolder.removeNavigator()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         supportFragmentManager.fragments.forEach {
             if (it is BackButtonListener && it.backPressed()) {

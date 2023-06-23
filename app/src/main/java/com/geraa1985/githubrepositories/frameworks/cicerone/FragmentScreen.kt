@@ -4,13 +4,9 @@ import androidx.fragment.app.Fragment
 import com.geraa1985.githubrepositories.frameworks.ui.fragments.ReposFragment
 import com.geraa1985.githubrepositories.frameworks.ui.fragments.UserFragment
 import moxy.MvpAppCompatFragment
-import ru.terrakok.cicerone.android.support.SupportAppScreen
+import com.github.terrakok.cicerone.Screen
 
-class FragmentScreen(private val fragment: MvpAppCompatFragment): SupportAppScreen() {
-
-    override fun getFragment(): Fragment {
-        return fragment
-    }
+class FragmentScreen(private val fragment: MvpAppCompatFragment): Screen {
 
     companion object{
         fun reposScreen() = FragmentScreen(ReposFragment())

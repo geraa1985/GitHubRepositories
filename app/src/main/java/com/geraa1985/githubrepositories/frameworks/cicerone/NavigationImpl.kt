@@ -1,7 +1,7 @@
 package com.geraa1985.githubrepositories.frameworks.cicerone
 
 import com.geraa1985.githubrepositories.adapters.INavigation
-import ru.terrakok.cicerone.Router
+import com.github.terrakok.cicerone.Router
 import javax.inject.Inject
 
 class NavigationImpl @Inject constructor(private val router: Router) : INavigation {

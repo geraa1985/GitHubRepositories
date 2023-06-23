@@ -2,10 +2,10 @@ package com.geraa1985.githubrepositories.di.modules
 
 import com.geraa1985.githubrepositories.adapters.INavigation
 import com.geraa1985.githubrepositories.frameworks.cicerone.NavigationImpl
+import com.github.terrakok.cicerone.Cicerone
+import com.github.terrakok.cicerone.Router
 import dagger.Module
 import dagger.Provides
-import ru.terrakok.cicerone.Cicerone
-import ru.terrakok.cicerone.Router
 import javax.inject.Singleton
 
 @Module
@@ -17,7 +17,7 @@ class NavigationModule {
 
     @Singleton
     @Provides
-    fun navigatorHolder(cicerone: Cicerone<Router>) = cicerone.navigatorHolder
+    fun navigatorHolder(cicerone: Cicerone<Router>) = cicerone.getNavigatorHolder()
 
     @Singleton
     @Provides
