@@ -111,7 +111,7 @@ class ReposFragment : MvpAppCompatFragment(), IReposView, BackButtonListener {
 
     override fun updateRepos(repos: List<GitHubRepo>) {
         adapter?.let {
-            if (it.getData().isNullOrEmpty()) {
+            if (it.getData().isEmpty()) {
                 it.setData(repos)
             } else {
                 val oldList = mutableListOf<GitHubRepo>().apply { addAll(it.getData()) }
